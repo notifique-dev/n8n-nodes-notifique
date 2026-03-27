@@ -26,7 +26,7 @@ function parseJsonObject(raw: string): JsonRecord {
 }
 
 function shouldConfirm(operation: string): boolean {
-  return ['cancel', 'delete'].includes(operation);
+  return ['cancel', 'delete'].indexOf(operation) !== -1;
 }
 
 function normalizeError(error: unknown): JsonRecord {

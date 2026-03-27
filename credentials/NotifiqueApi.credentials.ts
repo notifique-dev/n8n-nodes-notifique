@@ -37,14 +37,14 @@ export class NotifiqueApi implements ICredentialType {
     type: 'generic',
     properties: {
       headers: {
-        Authorization: '=Bearer {{$credentials?.apiKey}}',
+        Authorization: '=Bearer {{$credentials.apiKey}}',
       },
     },
   };
 
   test: ICredentialTestRequest = {
     request: {
-      baseURL: '={{$credentials?.baseUrl}}',
+      baseURL: '={{$credentials.baseUrl}}',
       url: '/templates',
       method: 'GET',
     },
