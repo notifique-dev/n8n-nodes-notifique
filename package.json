@@ -1,0 +1,49 @@
+{
+  "name": "n8n-nodes-notifique",
+  "version": "0.2.4",
+  "description": "n8n community node for Notifique - WhatsApp, SMS, Email and Push notifications",
+  "license": "MIT",
+  "homepage": "https://github.com/notifique-dev/n8n-nodes-notifique",
+  "author": {
+    "name": "Matheus Sanches Miranda",
+    "email": "sanchesmiranda.matheus@gmail.com"
+  },
+  "repository": "https://github.com/notifique-dev/n8n-nodes-notifique",
+  "bugs": {
+    "url": "https://github.com/notifique-dev/n8n-nodes-notifique/issues"
+  },
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "notifique",
+    "whatsapp",
+    "sms",
+    "email",
+    "push"
+  ],
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "node -e \"const fs=require('fs'); fs.mkdirSync('dist/nodes/Notifique',{recursive:true}); fs.copyFileSync('nodes/Notifique/notifique.svg','dist/nodes/Notifique/notifique.svg');\"",
+    "prepublishOnly": "npm run build"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "strict": true,
+    "credentials": [
+      "dist/credentials/NotifiqueApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Notifique/Notifique.node.js"
+    ]
+  },
+  "devDependencies": {
+    "n8n-workflow": "^1.82.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}
