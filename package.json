@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-notifique",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "description": "n8n community node for Notifique - WhatsApp, SMS, Email and Push notifications",
   "license": "MIT",
   "homepage": "https://github.com/notifique-dev/n8n-nodes-notifique",

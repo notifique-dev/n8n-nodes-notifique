@@ -1,11 +1,10 @@
-import {
-  NodeOperationError,
-  type IExecuteFunctions,
-  type IDataObject,
-  type INodeExecutionData,
-  type INodeType,
-  type INodeTypeDescription,
-  type IHttpRequestOptions,
+import type {
+  IExecuteFunctions,
+  IDataObject,
+  INodeExecutionData,
+  INodeType,
+  INodeTypeDescription,
+  IHttpRequestOptions,
 } from 'n8n-workflow';
 
 type JsonRecord = Record<string, unknown>;
@@ -31,12 +30,6 @@ function shouldConfirm(operation: string): boolean {
 }
 
 function normalizeError(error: unknown): JsonRecord {
-  if (error instanceof NodeOperationError) {
-    return {
-      name: error.name,
-      message: error.message,
-    };
-  }
   if (error instanceof Error) return { name: error.name, message: error.message };
   return { message: String(error) };
 }
@@ -453,11 +446,7 @@ export class NotifiqueNode implements INodeType {
         if (shouldConfirm(operation)) {
           const confirmed = this.getNodeParameter('confirmSensitive', i, false) as boolean;
           if (!confirmed) {
-            throw new NodeOperationError(
-              this.getNode(),
-              'Sensitive operation blocked. Enable "Confirm Sensitive Operation" to continue.',
-              { itemIndex: i },
-            );
+            throw new Error('Sensitive operation blocked. Enable "Confirm Sensitive Operation" to continue.');
           }
         }
 
@@ -697,13 +686,10 @@ export class NotifiqueNode implements INodeType {
           });
           continue;
         }
-        if (error instanceof NodeOperationError) {
+        if (error instanceof Error) {
           throw error;
         }
-        if (error instanceof Error) {
-          throw new NodeOperationError(this.getNode(), error.message, { itemIndex: i });
-        }
-        throw new NodeOperationError(this.getNode(), String(error), { itemIndex: i });
+        throw new Error(String(error));
       }
     }
 
