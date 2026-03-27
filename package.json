@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-notifique",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "n8n community node for Notifique - WhatsApp, SMS, Email and Push notifications",

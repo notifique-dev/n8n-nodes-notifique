@@ -34,7 +34,7 @@ function normalizeError(error: unknown): JsonRecord {
   return { message: String(error) };
 }
 
-export class NotifiqueNode implements INodeType {
+export class Notifique implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'Notifique',
     name: 'notifiqueNode',
