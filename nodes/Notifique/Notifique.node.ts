@@ -134,6 +134,7 @@ export class Notifique implements INodeType {
         displayOptions: { show: { resource: ['sms'] } },
         options: [
           { name: 'Send', value: 'send', action: 'Send SMS' },
+          { name: 'List', value: 'list', action: 'List SMS messages' },
           { name: 'Get', value: 'get', action: 'Get SMS status' },
           { name: 'Cancel', value: 'cancel', action: 'Cancel scheduled SMS' },
         ],
@@ -147,6 +148,7 @@ export class Notifique implements INodeType {
         displayOptions: { show: { resource: ['email'] } },
         options: [
           { name: 'Send', value: 'send', action: 'Send email' },
+          { name: 'List', value: 'list', action: 'List email messages' },
           { name: 'Get', value: 'get', action: 'Get email status' },
           { name: 'Cancel', value: 'cancel', action: 'Cancel scheduled email' },
         ],
@@ -260,7 +262,23 @@ export class Notifique implements INodeType {
       { displayName: 'Groups (comma-separated JIDs)', name: 'groupJidsCsv', type: 'string', default: '', displayOptions: { show: { resource: ['whatsappGroups'], operation: ['sendInvite'] } } },
       { displayName: 'Participants (comma-separated)', name: 'participantsCsv', type: 'string', default: '', displayOptions: { show: { resource: ['whatsappGroups'], operation: ['addParticipants', 'removeParticipants'] } } },
       { displayName: 'Invite Description', name: 'inviteDescription', type: 'string', default: 'Group invite', displayOptions: { show: { resource: ['whatsappGroups'], operation: ['sendInvite'] } } },
+      {
+        displayName: 'List filters (JSON)',
+        name: 'smsListFiltersJson',
+        type: 'json',
+        default: '{}',
+        description: 'Query params for GET /v1/sms/messages: page, limit, fromDate, toDate, status',
+        displayOptions: { show: { resource: ['sms'], operation: ['list'] } },
+      },
       { displayName: 'SMS ID', name: 'smsId', type: 'string', default: '', displayOptions: { show: { resource: ['sms'], operation: ['get', 'cancel'] } } },
+      {
+        displayName: 'List filters (JSON)',
+        name: 'emailListFiltersJson',
+        type: 'json',
+        default: '{}',
+        description: 'Query params for GET /v1/email/messages: page, limit, fromDate, toDate, status, emailDomainId',
+        displayOptions: { show: { resource: ['email'], operation: ['list'] } },
+      },
       { displayName: 'Email ID', name: 'emailId', type: 'string', default: '', displayOptions: { show: { resource: ['email'], operation: ['get', 'cancel'] } } },
       { displayName: 'From', name: 'from', type: 'string', default: '', displayOptions: { show: { resource: ['email', 'templates'], operation: ['send'] } } },
       { displayName: 'From Name', name: 'fromName', type: 'string', default: '', displayOptions: { show: { resource: ['email', 'templates'], operation: ['send'] } } },
@@ -535,6 +553,9 @@ export class Notifique implements INodeType {
             const to = toStringArray(this.getNodeParameter('to', i) as string);
             const message = this.getNodeParameter('message', i) as string;
             response = await apiRequest('POST', '/sms/messages', { to, message }, undefined, idempotencyHeaders);
+          } else if (operation === 'list') {
+            const params = parseJsonObject(this.getNodeParameter('smsListFiltersJson', i, '{}') as string);
+            response = await apiRequest('GET', '/sms/messages', undefined, params);
           } else if (operation === 'get') {
             const smsId = this.getNodeParameter('smsId', i) as string;
             response = await apiRequest('GET', `/sms/messages/${smsId}`);
@@ -555,6 +576,9 @@ export class Notifique implements INodeType {
             if (text) payload.text = text;
             if (html) payload.html = html;
             response = await apiRequest('POST', '/email/messages', payload, undefined, idempotencyHeaders);
+          } else if (operation === 'list') {
+            const params = parseJsonObject(this.getNodeParameter('emailListFiltersJson', i, '{}') as string);
+            response = await apiRequest('GET', '/email/messages', undefined, params);
           } else if (operation === 'get') {
             const emailId = this.getNodeParameter('emailId', i) as string;
             response = await apiRequest('GET', `/email/messages/${emailId}`);
